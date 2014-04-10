@@ -55,13 +55,13 @@ class Proxy(object):
     config = Juju.config()
     charm_id = self.config['charm']
     service_id = Juju.service_name()
-    env_uuid = Juju.env_uuid()
+    tenant = Juju.env_uuid()
     
-    logger.info("Ensuring that service is configured: %s %s %s", env_uuid, charm_id, service_id)
-    service = xaas.ensure_service(tenant=env_uuid, service_type=charm_id, service_id=service_id, config=config)
+    logger.info("Ensuring that service is configured: %s %s %s", tenant, charm_id, service_id)
+    service = xaas.ensure_service(tenant=tenant, service_type=charm_id, service_id=service_id, config=config)
     
     logger.info("Fetching service properties")
-    relation_properties = xaas.get_relation_properties(tenant=env_uuid, service_type=charm_id, service_id=service_id)
+    relation_properties = xaas.get_relation_properties(tenant=tenant, service_type=charm_id, service_id=service_id)
     
     relation = Relation.default()
 

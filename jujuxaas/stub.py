@@ -70,7 +70,7 @@ class Stub(object):
     config = Juju.config()
     charm_id = self.config['charm']
     service_id = Juju.service_name()
-    env_uuid = Juju.env_uuid()
+    tenant = Juju.env_uuid()
     unit_id = Juju.unit_name()
     remote_name = os.environ["JUJU_REMOTE_UNIT"]
     relation_id = relation.relation_id
@@ -83,7 +83,7 @@ class Stub(object):
       service_id = tokens[0]
     unit_id, remote_name = remote_name, unit_id
 
-    xaas.update_relation_properties(env_uuid=env_uuid,
+    xaas.update_relation_properties(tenant=tenant,
                                     service_id=service_id,
                                     charm_id=charm_id,
                                     relation=relation_name,

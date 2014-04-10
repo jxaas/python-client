@@ -46,7 +46,7 @@ class Client(object):
       raise Exception("Unexpected error from XaaS API, code: %s" % response.status_code)
     return response.json()
 
-  def get_relation_properties(self, env_uuid, service_type, service_id):
+  def get_relation_properties(self, tenant, service_type, service_id):
     url = self._build_service_url(tenant, service_type, [service_id, 'properties'])
     
     headers = {}
