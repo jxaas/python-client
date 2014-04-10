@@ -37,18 +37,29 @@ class Client(object):
     payload = {'Config': xaas_config}
     headers = {}
     headers['Content-Type'] = 'application/json'
-    
+
     data = json.dumps(payload)
     logging.info("Making XaaS request: PUT %s with %s", url, data)
-    
+
     response = requests.put(url, data=data, headers=headers)
     if response.status_code != 200:
       raise Exception("Unexpected error from XaaS API, code: %s" % response.status_code)
     return response.json()
 
+  def destroy_instance(self, tenant, service_type, service_id):
+    url = self._build_service_url(tenant, service_type, [service_id])
+
+    headers = {}
+
+    logging.info("Making XaaS request: DELETE %s", url)
+
+    response = requests.delete(url, headers=headers)
+    if response.status_code != 202:
+      raise Exception("Unexpected error from XaaS API, code: %s" % response.status_code)
+
   def get_relation_properties(self, tenant, service_type, service_id):
     url = self._build_service_url(tenant, service_type, [service_id, 'properties'])
-    
+
     headers = {}
     logging.info("Making XaaS request: GET %s", url)
 
@@ -56,7 +67,7 @@ class Client(object):
     if response.status_code != 200:
       raise Exception("Unexpected error from XaaS API, code: %s" % response.status_code)
     return response.json()
-  
+
   def update_relation_properties(self,
                                  tenant,
                                  service_type,
@@ -68,7 +79,7 @@ class Client(object):
                                  action,
                                  properties):
     url = self._build_service_url(tenant, service_type, [service_id, 'relation', relation])
-    
+
     # Cast everything to a string
     xaas_properties = {}
     for k, v in properties.iteritems():
@@ -83,10 +94,10 @@ class Client(object):
 
     headers = {}
     headers['Content-Type'] = 'application/json'
-    
+
     data = json.dumps(payload)
     logging.info("Making XaaS request: POST %s with %s", url, data)
-    
+
     response = requests.post(url, data=data, headers=headers)
     if response.status_code != 200:
       raise Exception("Unexpected error from XaaS API, code: %s" % response.status_code)
