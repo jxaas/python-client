@@ -58,10 +58,10 @@ class Proxy(object):
     env_uuid = Juju.env_uuid()
     
     logger.info("Ensuring that service is configured: %s %s %s", env_uuid, charm_id, service_id)
-    service = xaas.ensure_service(env_uuid=env_uuid, charm_id=charm_id, service_id=service_id, config=config)
+    service = xaas.ensure_service(tenant=env_uuid, service_type=charm_id, service_id=service_id, config=config)
     
     logger.info("Fetching service properties")
-    relation_properties = xaas.get_relation_properties(env_uuid=env_uuid, charm_id=charm_id, service_id=service_id)
+    relation_properties = xaas.get_relation_properties(tenant=env_uuid, service_type=charm_id, service_id=service_id)
     
     relation = Relation.default()
 
