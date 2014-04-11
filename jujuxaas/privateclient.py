@@ -28,7 +28,7 @@ class PrivateClient(object):
                                  remote_name,
                                  action,
                                  properties):
-    url = self._build_url('rpc', 'update_relation_properties')
+    url = self._build_url([ 'rpc', 'update_relation_properties' ])
 
     # Cast everything to a string
     xaas_properties = {}
