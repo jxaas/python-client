@@ -54,8 +54,8 @@ class Client(object):
     if response.status_code != 202:
       raise Exception("Unexpected error from XaaS API, code: %s" % response.status_code)
 
-  def get_relation_properties(self, tenant, service_type, service_id):
-    url = self._build_service_url(tenant, service_type, [service_id, 'properties'])
+  def get_relation_properties(self, tenant, service_type, service_id, relation):
+    url = self._build_service_url(tenant, service_type, [service_id, 'relations', relation])
 
     headers = {}
     logging.info("Making XaaS request: GET %s", url)
