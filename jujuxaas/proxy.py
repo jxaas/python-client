@@ -53,27 +53,42 @@ class Proxy(object):
     charm_id = self.config['charm']
     service_id = Juju.service_name()
     tenant = Juju.env_uuid()
-    
+
     logger.info("Ensuring that service is configured: %s %s %s", tenant, charm_id, service_id)
     service = xaas.ensure_service(tenant=tenant, service_type=charm_id, service_id=service_id, config=config)
-    
-    logger.info("Fetching service properties")
-    relation_properties = xaas.get_relation_properties(tenant=tenant, service_type=charm_id, service_id=service_id)
-    
-    relation = Relation.default()
-
-    logger.info("Setting relation properties to: %s", relation_properties)
-    relation.set_properties(relation_properties)
 
     return service
 
   def on_stop(self):
     # TODO: Stop service?
     xaas = self._client()
-    #service = xaas.ensure_service(charm=self.charm, service_id=service_id, env_uuid=env_uuid)
+    # service = xaas.ensure_service(charm=self.charm, service_id=service_id, env_uuid=env_uuid)
 
   def run_relation_hook(self, relation_name, action):
-    # TODO: Run the hook!
+    logger.info("Running relation hook %s %s", relation_name, action)
+
+    # TODO: Only on certain actions?
+    if action == 'broken':
+        return
+
     xaas = self._client()
-    #service = xaas.ensure_service(charm=self.charm, service_id=service_id, env_uuid=env_uuid)
+
+    tenant = Juju.env_uuid()
+    service_type = self.config['charm']
+    service_id = Juju.service_name()
+    #config = Juju.config()
+    #unit_id = Juju.unit_name()
+    #remote_name = os.environ["JUJU_REMOTE_UNIT"]
+    #relation_id = relation.relation_id
+
+    logger.info("Fetching service properties")
+    relation_properties = xaas.get_relation_properties(tenant=tenant,
+                                                       service_type=service_type,
+                                                       service_id=service_id,
+                                                       relation=relation)
+
+    relation = Relation.default()
+
+    logger.info("Setting relation properties to: %s", relation_properties)
+    relation.set_properties(relation_properties.get('Properties', {}))
 
