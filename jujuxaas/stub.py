@@ -68,7 +68,7 @@ class Stub(object):
     xaas = self._client()
     
     config = Juju.config()
-    charm_id = self.config['charm']
+    service_type = self.config['charm']
     service_id = Juju.service_name()
     tenant = Juju.env_uuid()
     unit_id = Juju.unit_name()
@@ -84,8 +84,8 @@ class Stub(object):
     unit_id, remote_name = remote_name, unit_id
 
     xaas.update_relation_properties(tenant=tenant,
+                                    service_type=service_type,
                                     service_id=service_id,
-                                    charm_id=charm_id,
                                     relation=relation_name,
                                     relation_id=relation_id,
                                     unit_id=unit_id,
