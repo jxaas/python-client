@@ -66,7 +66,9 @@ class Stub(object):
 
     relation = Relation.default()
 
-    properties = relation.get_properties()
+    properties = {}
+    if not action == "broken":
+        properties = relation.get_properties()
 
     logger.info("Got relation properties %s", properties)
 
