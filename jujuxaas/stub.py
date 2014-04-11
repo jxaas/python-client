@@ -82,20 +82,16 @@ class Stub(object):
     remote_name = os.environ["JUJU_REMOTE_UNIT"]
     relation_id = relation.relation_id
 
-#     # Swap the variables; we store it on the server
-#     # TODO: This is a little hacky
-#     service_id = remote_name
-#     tokens = service_id.split("/")
-#     if len(tokens) == 2:
-#       service_id = tokens[0]
-#     unit_id, remote_name = remote_name, unit_id
+    new_properties = xaas.update_relation_properties(tenant=tenant,
+                                                     service_type=service_type,
+                                                     service_id=service_id,
+                                                     relation=relation_name,
+                                                     relation_id=relation_id,
+                                                     unit_id=unit_id,
+                                                     remote_name=remote_name,
+                                                     action=action,
+                                                     properties=properties)
 
-    xaas.update_relation_properties(tenant=tenant,
-                                    service_type=service_type,
-                                    service_id=service_id,
-                                    relation=relation_name,
-                                    relation_id=relation_id,
-                                    unit_id=unit_id,
-                                    remote_name=remote_name,
-                                    action=action,
-                                    properties=properties)
+    if new_properties:
+        logger.info("Setting relation properties to: %s", new_properties)
+        relation.set_properties(new_properties)

@@ -57,5 +57,7 @@ class PrivateClient(object):
     if response.status_code != 200:
       raise Exception("Unexpected error from XaaS API, code: %s" % response.status_code)
     logging.info("Response: %s", response.headers)
-    return response.json()
+    j = response.json()
+
+    return j.get('Properties', {})
 
