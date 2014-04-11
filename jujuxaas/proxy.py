@@ -85,7 +85,7 @@ class Proxy(object):
     relation_properties = xaas.get_relation_properties(tenant=tenant,
                                                        service_type=service_type,
                                                        service_id=service_id,
-                                                       relation=relation)
+                                                       relation=relation_name)
 
     relation = Relation.default()
 
