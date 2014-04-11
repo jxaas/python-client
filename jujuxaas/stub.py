@@ -3,6 +3,7 @@ import yaml
 
 from jujucharmtoolkit.juju import Juju, Relation
 import jujuxaas.client
+import jujuxaas.privateclient
 
 import logging
 logger = logging.getLogger(__name__)
