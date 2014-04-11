@@ -1,6 +1,3 @@
-#!/usr/bin/env python
-# vim: syntax=python
-
 import os
 import yaml
 

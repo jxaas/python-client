@@ -1,6 +1,3 @@
-#!/usr/bin/env python
-# vim: syntax=python
-
 import os
 import yaml
 
@@ -31,11 +28,18 @@ def on_config_changed():
     return stub.on_config_changed()
 
 class Stub(object):
-  def _client(self):
+  def __init__(self):
     self._cache_config = None
+
+  def _client(self):
     # TODO: Make this configurable!!
     xaas = jujuxaas.client.Client(url='http://10.0.3.1:8080/xaas', username='', password='')
     return xaas
+
+  def _privateclient(self):
+    # TODO: Make this configurable!!
+    client = jujuxaas.privateclient.PrivateClient(url='http://10.0.3.1:8080/xaasprivate', username='', password='')
+    return client
 
   @property
   def config(self):
@@ -58,15 +62,15 @@ class Stub(object):
   def run_relation_hook(self, relation_name, action):
     # TODO: Only on certain actions?
     logger.info("Running relation hook %s %s", relation_name, action)
-    
+
     relation = Relation.default()
-    
+
     properties = relation.get_properties()
-    
+
     logger.info("Got relation properties %s", properties)
-    
-    xaas = self._client()
-    
+
+    xaas = self._privateclient()
+
     config = Juju.config()
     service_type = self.config['charm']
     service_id = Juju.service_name()
@@ -74,14 +78,14 @@ class Stub(object):
     unit_id = Juju.unit_name()
     remote_name = os.environ["JUJU_REMOTE_UNIT"]
     relation_id = relation.relation_id
-    
-    # Swap the variables; we store it on the server
-    # TODO: This is a little hacky
-    service_id = remote_name
-    tokens = service_id.split("/")
-    if len(tokens) == 2:
-      service_id = tokens[0]
-    unit_id, remote_name = remote_name, unit_id
+
+#     # Swap the variables; we store it on the server
+#     # TODO: This is a little hacky
+#     service_id = remote_name
+#     tokens = service_id.split("/")
+#     if len(tokens) == 2:
+#       service_id = tokens[0]
+#     unit_id, remote_name = remote_name, unit_id
 
     xaas.update_relation_properties(tenant=tenant,
                                     service_type=service_type,

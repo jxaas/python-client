@@ -1,6 +1,3 @@
-#!/usr/bin/env python
-# vim: syntax=python
-
 import json
 import requests
 import urlparse
@@ -67,40 +64,3 @@ class Client(object):
     if response.status_code != 200:
       raise Exception("Unexpected error from XaaS API, code: %s" % response.status_code)
     return response.json()
-
-  def update_relation_properties(self,
-                                 tenant,
-                                 service_type,
-                                 service_id,
-                                 relation,
-                                 relation_id,
-                                 unit_id,
-                                 remote_name,
-                                 action,
-                                 properties):
-    url = self._build_service_url(tenant, service_type, [service_id, 'relation', relation])
-
-    # Cast everything to a string
-    xaas_properties = {}
-    for k, v in properties.iteritems():
-      xaas_properties[k] = str(v)
-
-    payload = {}
-    payload['Properties'] = xaas_properties
-    payload['Action'] = action
-    payload['RelationId'] = relation_id
-    payload['UnitId'] = unit_id
-    payload['RemoteName'] = remote_name
-
-    headers = {}
-    headers['Content-Type'] = 'application/json'
-
-    data = json.dumps(payload)
-    logging.info("Making XaaS request: POST %s with %s", url, data)
-
-    response = requests.post(url, data=data, headers=headers)
-    if response.status_code != 200:
-      raise Exception("Unexpected error from XaaS API, code: %s" % response.status_code)
-    logging.info("Response: %s", response.headers)
-    return response.json()
-
