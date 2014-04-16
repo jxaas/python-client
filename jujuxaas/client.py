@@ -85,7 +85,7 @@ class Client(object):
     response = requests.get(url, headers=headers)
     if response.status_code != 200:
       raise Exception("Unexpected error from XaaS API, code: %s" % response.status_code)
-    return response.json()['Line']
+    return response.json()['Lines']
 
   def get_metrics(self, tenant, bundle_type, instance_id):
     url = self._build_service_url(tenant, bundle_type, [instance_id, 'metrics'])
