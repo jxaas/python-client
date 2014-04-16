@@ -59,7 +59,7 @@ class Proxy(object):
     service = xaas.ensure_instance(tenant=tenant, bundle_type=bundle_type, instance_id=instance_id, config=config)
 
     # TODO: Timeout & throw error after a while
-    while service.get('State') != 'started':
+    while service.get('Status') != 'started':
       logger.info("Waiting for service to reach active state.  Current state %s", service.get('State'))
       time.sleep(5)
       service = xaas.get_instance_state(tenant=tenant, bundle_type=bundle_type, instance_id=instance_id)
