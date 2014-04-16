@@ -20,8 +20,8 @@ class PrivateClient(object):
 
   def update_relation_properties(self,
                                  tenant,
-                                 service_type,
-                                 service_id,
+                                 bundle_type,
+                                 service_name,
                                  relation,
                                  relation_id,
                                  unit_id,
@@ -37,9 +37,8 @@ class PrivateClient(object):
 
     payload = {}
     payload['Tenant'] = tenant
-    payload['ServiceType'] = service_type
-
-    payload['ServiceId'] = service_id
+    payload['BundleType'] = bundle_type
+    payload['ServiceName'] = service_name
     payload['Relation'] = relation
     payload['RelationId'] = relation_id
     payload['UnitId'] = unit_id

@@ -18,13 +18,13 @@ class Client(object):
     url = urlparse.urljoin(self.base_url, relative_url)
     return url
 
-  def _build_service_url(self, tenant, service_type, extra_components):
-    components = [ tenant, 'services', service_type ]
+  def _build_service_url(self, tenant, bundle_type, extra_components):
+    components = [ tenant, 'services', bundle_type ]
     components = components + extra_components
     return self._build_url(components)
 
-  def ensure_service(self, tenant, service_type, service_id, config):
-    url = self._build_service_url(tenant, service_type, [service_id])
+  def ensure_instance(self, tenant, bundle_type, instance_id, config):
+    url = self._build_service_url(tenant, bundle_type, [instance_id])
 
     # Cast everything to a string
     xaas_config = {}
@@ -43,8 +43,8 @@ class Client(object):
       raise Exception("Unexpected error from XaaS API, code: %s" % response.status_code)
     return response.json()
 
-  def destroy_instance(self, tenant, service_type, service_id):
-    url = self._build_service_url(tenant, service_type, [service_id])
+  def destroy_instance(self, tenant, bundle_type, instance_id):
+    url = self._build_service_url(tenant, bundle_type, [instance_id])
 
     headers = {}
 
@@ -54,8 +54,41 @@ class Client(object):
     if response.status_code != 202:
       raise Exception("Unexpected error from XaaS API, code: %s" % response.status_code)
 
-  def get_relation_properties(self, tenant, service_type, service_id, relation):
-    url = self._build_service_url(tenant, service_type, [service_id, 'relations', relation])
+  def get_instance_state(self, tenant, bundle_type, instance_id):
+    url = self._build_service_url(tenant, bundle_type, [instance_id])
+
+    headers = {}
+    logging.info("Making XaaS request: GET %s", url)
+
+    response = requests.get(url, headers=headers)
+    if response.status_code != 200:
+      raise Exception("Unexpected error from XaaS API, code: %s" % response.status_code)
+    return response.json()
+
+  def get_relation_properties(self, tenant, bundle_type, instance_id, relation):
+    url = self._build_service_url(tenant, bundle_type, [instance_id, 'relations', relation])
+
+    headers = {}
+    logging.info("Making XaaS request: GET %s", url)
+
+    response = requests.get(url, headers=headers)
+    if response.status_code != 200:
+      raise Exception("Unexpected error from XaaS API, code: %s" % response.status_code)
+    return response.json()
+
+  def get_log(self, tenant, bundle_type, instance_id):
+    url = self._build_service_url(tenant, bundle_type, [instance_id, 'log'])
+
+    headers = {}
+    logging.info("Making XaaS request: GET %s", url)
+
+    response = requests.get(url, headers=headers)
+    if response.status_code != 200:
+      raise Exception("Unexpected error from XaaS API, code: %s" % response.status_code)
+    return response.json()['Line']
+
+  def get_metrics(self, tenant, bundle_type, instance_id):
+    url = self._build_service_url(tenant, bundle_type, [instance_id, 'metrics'])
 
     headers = {}
     logging.info("Making XaaS request: GET %s", url)
