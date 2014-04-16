@@ -54,7 +54,7 @@ class Proxy(object):
     instance_id = Juju.service_name()
     tenant = Juju.env_uuid()
 
-    logger.info("Ensuring that service is configured: %s %s %s", tenant, charm_id, instance_id)
+    logger.info("Ensuring that service is configured: %s %s %s", tenant, bundle_type, instance_id)
     service = xaas.ensure_instance(tenant=tenant, bundle_type=bundle_type, instance_id=instance_id, config=config)
 
     # TODO: Timeout & throw error after a while
