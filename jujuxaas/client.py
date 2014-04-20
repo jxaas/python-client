@@ -23,15 +23,21 @@ class Client(object):
     components = components + extra_components
     return self._build_url(components)
 
-  def ensure_instance(self, tenant, bundle_type, instance_id, config):
+  def ensure_instance(self, tenant, bundle_type, instance_id, config=None, units=None):
     url = self._build_service_url(tenant, bundle_type, [instance_id])
 
-    # Cast everything to a string
-    xaas_config = {}
-    for k, v in config.iteritems():
-      xaas_config[k] = str(v)
+    payload = {}
 
-    payload = {'Config': xaas_config}
+    # Cast everything to a string
+    if not config is None:
+      xaas_config = {}
+      for k, v in config.iteritems():
+        xaas_config[k] = str(v)
+      payload['Config'] = xaas_config
+
+    if not units is None:
+      payload['NumberUnits'] = units
+
     headers = {}
     headers['Content-Type'] = 'application/json'
 
