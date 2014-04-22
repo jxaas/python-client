@@ -45,6 +45,7 @@ class Stub(object):
 #     return xaas
 
   def _privateclient(self):
+    config = Juju.config()
     url = config.get('jxaas-privateurl', '')
     if not url:
       raise Exception("jxaas-privateurl is required")
