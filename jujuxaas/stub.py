@@ -32,17 +32,17 @@ class Stub(object):
   def __init__(self):
     self._cache_config = None
 
-  def _client(self):
-    url = config.get('jxaas-url', '')
-    if not url:
-      raise Exception("jxaas-url is required")
-    tenant = config.get('jxaas-tenant', '')
-    if not tenant:
-      raise Exception("jxaas-tenant is required")
-    username = config.get('jxaas-user', '')
-    secret = config.get('jxaas-secret', '')
-    xaas = jujuxaas.client.Client(url=url, tenant=tenant, username=username, password=password)
-    return xaas
+#   def _client(self):
+#     url = config.get('jxaas-url', '')
+#     if not url:
+#       raise Exception("jxaas-url is required")
+#     tenant = config.get('jxaas-tenant', '')
+#     if not tenant:
+#       raise Exception("jxaas-tenant is required")
+#     username = config.get('jxaas-user', '')
+#     secret = config.get('jxaas-secret', '')
+#     xaas = jujuxaas.client.Client(url=url, tenant=tenant, username=username, password=password)
+#     return xaas
 
   def _privateclient(self):
     url = config.get('jxaas-privateurl', '')
