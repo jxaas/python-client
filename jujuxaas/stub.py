@@ -41,7 +41,7 @@ class Stub(object):
 #       raise Exception("jxaas-tenant is required")
 #     username = config.get('jxaas-user', '')
 #     secret = config.get('jxaas-secret', '')
-#     xaas = jujuxaas.client.Client(url=url, tenant=tenant, username=username, password=password)
+#     xaas = jujuxaas.client.Client(url=url, tenant=tenant, username=username, password=secret)
 #     return xaas
 
   def _privateclient(self):
@@ -54,7 +54,7 @@ class Stub(object):
     username = config.get('jxaas-user', '')
     secret = config.get('jxaas-secret', '')
 
-    client = jujuxaas.privateclient.PrivateClient(url=url, tenant=tenant, username=username, password=password)
+    client = jujuxaas.privateclient.PrivateClient(url=url, tenant=tenant, username=username, password=secret)
     return client
 
   @property

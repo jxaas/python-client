@@ -40,7 +40,7 @@ class Proxy(object):
     username = config.get('jxaas-user', '')
     secret = config.get('jxaas-secret', '')
 
-    xaas = jujuxaas.client.Client(url=url, tenant=tenant, username=username, password=password)
+    xaas = jujuxaas.client.Client(url=url, tenant=tenant, username=username, password=secret)
     return xaas
 
   @property
