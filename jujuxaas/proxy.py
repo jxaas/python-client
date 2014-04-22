@@ -29,6 +29,9 @@ def on_config_changed():
     return proxy.on_config_changed()
 
 class Proxy(object):
+  def __init__(self):
+    self._cache_config = None
+
   def _client(self):
     config = Juju.config()
     url = config.get('jxaas-url', '')
