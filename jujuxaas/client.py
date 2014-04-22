@@ -61,6 +61,16 @@ class Client(object):
     if response.status_code != 202:
       raise Exception("Unexpected error from XaaS API, code: %s" % response.status_code)
 
+  def list_instances(self, bundle_type):
+    url = self._build_service_url(bundle_type, [])
+
+    headers = {}
+    logging.info("Making XaaS request: GET %s", url)
+    response = requests.get(url, headers=headers)
+    if response.status_code != 200:
+      raise Exception("Unexpected error from XaaS API, code: %s" % response.status_code)
+    return response.json()
+
   def get_instance_state(self, bundle_type, instance_id):
     url = self._build_service_url(bundle_type, [instance_id])
 
