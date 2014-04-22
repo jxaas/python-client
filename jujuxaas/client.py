@@ -6,10 +6,11 @@ import logging
 logger = logging.getLogger(__name__)
 
 class Client(object):
-  def __init__(self, url, username, password):
+  def __init__(self, url, tenant, username, password):
     if not url.endswith("/"):
       url = url + "/"
     self.base_url = url
+    self.tenant = tenant
     self.username = username
     self.password = password
 

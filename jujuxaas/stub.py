@@ -33,13 +33,28 @@ class Stub(object):
     self._cache_config = None
 
   def _client(self):
-    # TODO: Make this configurable!!
-    xaas = jujuxaas.client.Client(url='http://10.0.3.1:8080/xaas', username='', password='')
+    url = config.get('jxaas-url', '')
+    if not url:
+      raise Exception("jxaas-url is required")
+    tenant = config.get('jxaas-tenant', '')
+    if not tenant:
+      raise Exception("jxaas-tenant is required")
+    username = config.get('jxaas-user', '')
+    secret = config.get('jxaas-secret', '')
+    xaas = jujuxaas.client.Client(url=url, tenant=tenant, username=username, password=password)
     return xaas
 
   def _privateclient(self):
-    # TODO: Make this configurable!!
-    client = jujuxaas.privateclient.PrivateClient(url='http://10.0.3.1:8080/xaasprivate', username='', password='')
+    url = config.get('jxaas-privateurl', '')
+    if not url:
+      raise Exception("jxaas-privateurl is required")
+    tenant = config.get('jxaas-tenant', '')
+    if not tenant:
+      raise Exception("jxaas-tenant is required")
+    username = config.get('jxaas-user', '')
+    secret = config.get('jxaas-secret', '')
+
+    client = jujuxaas.privateclient.PrivateClient(url=url, tenant=tenant, username=username, password=password)
     return client
 
   @property
