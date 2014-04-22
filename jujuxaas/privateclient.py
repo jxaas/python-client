@@ -20,7 +20,6 @@ class PrivateClient(object):
     return url
 
   def update_relation_properties(self,
-                                 tenant,
                                  bundle_type,
                                  service_name,
                                  relation,
@@ -37,7 +36,7 @@ class PrivateClient(object):
       xaas_properties[k] = str(v)
 
     payload = {}
-    payload['Tenant'] = tenant
+    payload['Tenant'] = self.tenant
     payload['BundleType'] = bundle_type
     payload['ServiceName'] = service_name
     payload['Relation'] = relation

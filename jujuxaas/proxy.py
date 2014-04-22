@@ -61,16 +61,15 @@ class Proxy(object):
     config = Juju.config()
     bundle_type = self.config['charm']
     instance_id = Juju.service_name()
-    tenant = Juju.env_uuid()
 
-    logger.info("Ensuring that service is configured: %s %s %s", tenant, bundle_type, instance_id)
-    service = xaas.ensure_instance(tenant=tenant, bundle_type=bundle_type, instance_id=instance_id, config=config)
+    logger.info("Ensuring that service is configured: %s %s", bundle_type, instance_id)
+    service = xaas.ensure_instance(bundle_type=bundle_type, instance_id=instance_id, config=config)
 
     # TODO: Timeout & throw error after a while
     while service.get('Status') != 'started':
       logger.info("Waiting for service to reach active state.  Current state %s", service.get('State'))
       time.sleep(5)
-      service = xaas.get_instance_state(tenant=tenant, bundle_type=bundle_type, instance_id=instance_id)
+      service = xaas.get_instance_state(bundle_type=bundle_type, instance_id=instance_id)
 
     return service
 
@@ -88,7 +87,6 @@ class Proxy(object):
 
     xaas = self._client()
 
-    tenant = Juju.env_uuid()
     bundle_type = self.config['charm']
     instance_id = Juju.service_name()
     # config = Juju.config()
@@ -97,8 +95,7 @@ class Proxy(object):
     # relation_id = relation.relation_id
 
     logger.info("Fetching service properties")
-    relation_properties = xaas.get_relation_properties(tenant=tenant,
-                                                       bundle_type=bundle_type,
+    relation_properties = xaas.get_relation_properties(bundle_type=bundle_type,
                                                        instance_id=instance_id,
                                                        relation=relation_name)
 
