@@ -90,13 +90,16 @@ class Stub(object):
     servers = []
     servers.append(['s_1', host, private_port])
 
-    settings = {}
-    settings['service_name'] = unit_id + '_' + relation_id
-    settings['service_options'] = [ 'mode http', 'balance lastconn' ]
-    settings['servers'] = servers
+    service = {}
+    service['service_name'] = unit_id + '_' + relation_id
+    service['service_options'] = [ 'mode http', 'balance lastconn' ]
+    service['servers'] = servers
+
+    services = []
+    services.append(service)
 
     new_properties = {}
-    new_properties['services'] = yaml.dump(settings)
+    new_properties['services'] = yaml.dump(services)
 
 #     relation-set "services=
 #     - { service_name: my_web_app,
