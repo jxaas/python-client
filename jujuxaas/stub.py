@@ -93,7 +93,7 @@ class Stub(object):
 
     service = {}
     service['service_name'] = service_name
-    service['service_options'] = [ 'mode http', 'balance lastconn' ]
+    service['service_options'] = [ 'mode http', 'balance leastconn' ]
     service['servers'] = servers
 
     services = []
