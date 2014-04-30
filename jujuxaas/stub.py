@@ -72,8 +72,9 @@ class Stub(object):
     logger.info("Running load-balancer hook %s", action)
 
     host = Juju.private_address()
-    private_port = self.config['private-port']
-    public_port = self.config['public-port']
+    config = Juju.config()
+    private_port = config['private-port']
+    public_port = config['public-port']
 
     if private_port == 0:
       logger.info("Private port is 0; won't configure load balancer")
