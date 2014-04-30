@@ -89,7 +89,7 @@ class Stub(object):
     relation_id = relation.relation_id
 
     servers = []
-    servers.append(['s_1', host, private_port])
+    servers.append(['s_1', host, private_port, ''])
 
     service = {}
     service['service_name'] = service_name
