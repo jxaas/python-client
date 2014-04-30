@@ -95,7 +95,9 @@ class Stub(object):
     service['service_name'] = service_name
     service['service_options'] = [ 'mode tcp', 'balance leastconn' ]
     service['servers'] = servers
-    # service_host is also supported
+
+    # Must set both service_host and service_port, or else haproxy ignores the other
+    service['service_host'] = '0.0.0.0'
     service['service_port'] = public_port
 
     services = []
