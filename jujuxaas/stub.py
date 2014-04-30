@@ -114,7 +114,7 @@ class Stub(object):
 
   def run_relation_hook(self, relation_name, action):
     if relation_name == 'website':
-      return self._run_website_hook(action)
+      return self._run_loadbalancer_hook(action)
 
     # TODO: Only on certain actions?
     logger.info("Running relation hook %s %s", relation_name, action)
