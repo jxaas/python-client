@@ -58,14 +58,6 @@ class Stub(object):
     client = jujuxaas.privateclient.PrivateClient(url=url, tenant=tenant, username=username, password=secret)
     return client
 
-  @property
-  def config(self):
-    if not self._cache_config:
-      config_path = os.path.join(os.environ.get("CHARM_DIR", ""), "stub.yaml")
-      with open(config_path) as f:
-        self._cache_config = yaml.load(f)
-    return self._cache_config
-
   def on_start(self):
     # We just defer to on_config_changed - everything should be idempotent
     return self.on_config_changed()
@@ -91,14 +83,12 @@ class Stub(object):
     xaas = self._privateclient()
 
     config = Juju.config()
-    bundle_type = self.config['charm']
     service_name = Juju.service_name()
     unit_id = Juju.unit_name()
     remote_name = os.environ["JUJU_REMOTE_UNIT"]
     relation_id = relation.relation_id
 
-    new_properties = xaas.update_relation_properties(bundle_type=bundle_type,
-                                                     service_name=service_name,
+    new_properties = xaas.update_relation_properties(service_name=service_name,
                                                      relation=relation_name,
                                                      relation_id=relation_id,
                                                      unit_id=unit_id,

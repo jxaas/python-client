@@ -20,7 +20,6 @@ class PrivateClient(object):
     return url
 
   def update_relation_properties(self,
-                                 bundle_type,
                                  service_name,
                                  relation,
                                  relation_id,
@@ -37,7 +36,6 @@ class PrivateClient(object):
 
     payload = {}
     payload['Tenant'] = self.tenant
-    payload['BundleType'] = bundle_type
     payload['ServiceName'] = service_name
     payload['Relation'] = relation
     payload['RelationId'] = relation_id
