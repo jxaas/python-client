@@ -93,8 +93,10 @@ class Stub(object):
 
     service = {}
     service['service_name'] = service_name
-    service['service_options'] = [ 'mode http', 'balance leastconn' ]
+    service['service_options'] = [ 'mode tcp', 'balance leastconn' ]
     service['servers'] = servers
+    # service_host is also supported
+    service['service_port'] = public_port
 
     services = []
     services.append(service)
