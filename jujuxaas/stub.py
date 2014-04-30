@@ -98,9 +98,6 @@ class Stub(object):
     new_properties = {}
     new_properties['services'] = yaml.dump(settings)
 
-    logger.info("Setting relation properties to: %s", new_properties)
-    relation.set_properties(relation_properties.get('Properties', {}))
-
 #     relation-set "services=
 #     - { service_name: my_web_app,
 #         service_options: [mode http, balance leastconn],
