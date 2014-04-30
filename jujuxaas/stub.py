@@ -82,7 +82,8 @@ class Stub(object):
     if public_port == 0:
       logger.info("Public port is 0; won't configure load balancer")
 
-    unit_id = Juju.unit_name()
+    service_name = Juju.unit_name()
+    service_name = service_name.split('/')[0]
 
     relation = Relation.default()
     relation_id = relation.relation_id
@@ -91,7 +92,7 @@ class Stub(object):
     servers.append(['s_1', host, private_port])
 
     service = {}
-    service['service_name'] = unit_id + '_' + relation_id
+    service['service_name'] = service_name
     service['service_options'] = [ 'mode http', 'balance lastconn' ]
     service['servers'] = servers
 
