@@ -63,6 +63,14 @@ class Stub(object):
     return self.on_config_changed()
 
   def on_config_changed(self):
+    config = Juju.config()
+    open_ports = config.get('open-ports', '')
+    for open_port in open_ports.split(','):
+      open_port = open_port.strip()
+      if open_port == "":
+        continue
+      Juju.open_port(open_port)
+
     return None
 
   def on_stop(self):
