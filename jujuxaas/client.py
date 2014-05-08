@@ -43,7 +43,7 @@ class Client(object):
     headers['Content-Type'] = 'application/json'
 
     data = json.dumps(payload)
-    logging.info("Making XaaS request: PUT %s with %s", url, data)
+    logging.debug("Making XaaS request: PUT %s with %s", url, data)
 
     response = requests.put(url, data=data, headers=headers)
     if response.status_code != 200:
@@ -55,7 +55,7 @@ class Client(object):
 
     headers = {}
 
-    logging.info("Making XaaS request: DELETE %s", url)
+    logging.debug("Making XaaS request: DELETE %s", url)
 
     response = requests.delete(url, headers=headers)
     if response.status_code != 202:
@@ -65,7 +65,7 @@ class Client(object):
     url = self._build_service_url(bundle_type, [])
 
     headers = {}
-    logging.info("Making XaaS request: GET %s", url)
+    logging.debug("Making XaaS request: GET %s", url)
     response = requests.get(url, headers=headers)
     if response.status_code != 200:
       raise Exception("Unexpected error from XaaS API, code: %s" % response.status_code)
@@ -75,7 +75,7 @@ class Client(object):
     url = self._build_service_url(bundle_type, [instance_id])
 
     headers = {}
-    logging.info("Making XaaS request: GET %s", url)
+    logging.debug("Making XaaS request: GET %s", url)
 
     response = requests.get(url, headers=headers)
     if response.status_code != 200:
@@ -86,7 +86,7 @@ class Client(object):
     url = self._build_service_url(bundle_type, [instance_id, 'relations', relation])
 
     headers = {}
-    logging.info("Making XaaS request: GET %s", url)
+    logging.debug("Making XaaS request: GET %s", url)
 
     response = requests.get(url, headers=headers)
     if response.status_code != 200:
@@ -97,7 +97,7 @@ class Client(object):
     url = self._build_service_url(bundle_type, [instance_id, 'log'])
 
     headers = {}
-    logging.info("Making XaaS request: GET %s", url)
+    logging.debug("Making XaaS request: GET %s", url)
 
     response = requests.get(url, headers=headers)
     if response.status_code != 200:
@@ -108,7 +108,7 @@ class Client(object):
     url = self._build_service_url(bundle_type, [instance_id, 'metrics'])
 
     headers = {}
-    logging.info("Making XaaS request: GET %s", url)
+    logging.debug("Making XaaS request: GET %s", url)
 
     response = requests.get(url, headers=headers)
     if response.status_code != 200:

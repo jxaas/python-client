@@ -48,12 +48,12 @@ class PrivateClient(object):
     headers['Content-Type'] = 'application/json'
 
     data = json.dumps(payload)
-    logging.info("Making XaaS request: POST %s with %s", url, data)
+    logging.debug("Making XaaS request: POST %s with %s", url, data)
 
     response = requests.post(url, data=data, headers=headers)
     if response.status_code != 200:
       raise Exception("Unexpected error from XaaS API, code: %s" % response.status_code)
-    logging.info("Response: %s", response.headers)
+    logging.debug("Response: %s", response.headers)
     j = response.json()
 
     return j.get('Properties', {})
