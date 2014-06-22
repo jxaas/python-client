@@ -20,7 +20,9 @@ class Client(object):
     return url
 
   def _build_service_url(self, bundle_type, extra_components):
-    components = [ self.tenant, 'services', bundle_type ]
+    components = [ self.tenant, 'services' ]
+    if bundle_type:
+      components.append(bundle_type)
     components = components + extra_components
     return self._build_url(components)
 
@@ -60,6 +62,16 @@ class Client(object):
     response = requests.delete(url, headers=headers)
     if response.status_code != 202:
       raise Exception("Unexpected error from XaaS API, code: %s" % response.status_code)
+
+  def list_bundle_types(self):
+    url = self._build_service_url(None, [])
+
+    headers = {}
+    logging.debug("Making XaaS request: GET %s", url)
+    response = requests.get(url, headers=headers)
+    if response.status_code != 200:
+      raise Exception("Unexpected error from XaaS API, code: %s" % response.status_code)
+    return response.json()
 
   def list_instances(self, bundle_type):
     url = self._build_service_url(bundle_type, [])
