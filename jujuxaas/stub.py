@@ -127,6 +127,7 @@ class Stub(object):
         relation.set_properties(new_properties)
 
   def run_relation_hook(self, relation_name, action):
+    # TODO: It would be nice to use our own relation here, rather than reusing the 'website' relation
     if relation_name == 'website':
       return self._run_loadbalancer_hook(action)
 
