@@ -37,9 +37,21 @@ class Client(object):
       raise Exception("Unexpected error from XaaS API, code: %s" % response.status_code)
     return response.json()
 
-  def ensure_instance(self, bundle_type, instance_id, config=None, units=None):
-    url = self._build_service_url(bundle_type, [instance_id])
+  def _simple_put(self, bundle_type, path, payload):
+    url = self._build_service_url(bundle_type, path)
 
+    headers = {}
+    headers['Content-Type'] = 'application/json'
+
+    data = json.dumps(payload)
+    logging.debug("Making XaaS request: PUT %s with %s", url, data)
+
+    response = requests.put(url, data=data, headers=headers)
+    if response.status_code != 200:
+      raise Exception("Unexpected error from XaaS API, code: %s" % response.status_code)
+    return response.json()
+
+  def ensure_instance(self, bundle_type, instance_id, config=None, units=None):
     payload = {}
 
     # Cast everything to a string
@@ -52,16 +64,7 @@ class Client(object):
     if not units is None:
       payload['NumberUnits'] = units
 
-    headers = {}
-    headers['Content-Type'] = 'application/json'
-
-    data = json.dumps(payload)
-    logging.debug("Making XaaS request: PUT %s with %s", url, data)
-
-    response = requests.put(url, data=data, headers=headers)
-    if response.status_code != 200:
-      raise Exception("Unexpected error from XaaS API, code: %s" % response.status_code)
-    return response.json()
+    return self._simple_put(bundle_type, [instance_id], payload)
 
   def destroy_instance(self, bundle_type, instance_id):
     url = self._build_service_url(bundle_type, [instance_id])
@@ -146,3 +149,6 @@ class Client(object):
 
   def get_scaling(self, bundle_type, instance_id):
     return self._simple_get(bundle_type, [instance_id, 'scaling'])
+
+  def set_scaling(self, bundle_type, instance_id, policy):
+    return self._simple_put(bundle_type, [instance_id, 'scaling'], policy)
