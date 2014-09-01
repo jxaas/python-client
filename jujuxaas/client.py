@@ -26,6 +26,17 @@ class Client(object):
     components = components + extra_components
     return self._build_url(components)
 
+  def _simple_get(self, bundle_type, path):
+    url = self._build_service_url(bundle_type, path)
+
+    headers = {}
+    logging.debug("Making XaaS request: GET %s", url)
+
+    response = requests.get(url, headers=headers)
+    if response.status_code != 200:
+      raise Exception("Unexpected error from XaaS API, code: %s" % response.status_code)
+    return response.json()
+
   def ensure_instance(self, bundle_type, instance_id, config=None, units=None):
     url = self._build_service_url(bundle_type, [instance_id])
 
@@ -61,6 +72,20 @@ class Client(object):
 
     response = requests.delete(url, headers=headers)
     if response.status_code != 202:
+      raise Exception("Unexpected error from XaaS API, code: %s" % response.status_code)
+
+  def repair_instance(self, bundle_type, instance_id):
+    url = self._build_service_url(bundle_type, [instance_id, 'health'])
+
+    headers = {}
+
+    payload = {}
+    data = json.dumps(payload)
+
+    logging.debug("Making XaaS request: POST %s with %s", url, data)
+
+    response = requests.post(url, data=data, headers=headers)
+    if response.status_code != 200:
       raise Exception("Unexpected error from XaaS API, code: %s" % response.status_code)
 
   def list_bundle_types(self):
@@ -106,34 +131,15 @@ class Client(object):
     return response.json()
 
   def get_log(self, bundle_type, instance_id):
-    url = self._build_service_url(bundle_type, [instance_id, 'log'])
+    json = self._simple_get(bundle_type, [instance_id, 'log'])
 
-    headers = {}
-    logging.debug("Making XaaS request: GET %s", url)
+    return json['Lines']
 
-    response = requests.get(url, headers=headers)
-    if response.status_code != 200:
-      raise Exception("Unexpected error from XaaS API, code: %s" % response.status_code)
-    return response.json()['Lines']
+  def get_health(self, bundle_type, instance_id):
+    return self._simple_get(bundle_type, [instance_id, 'health'])
 
   def get_metrics(self, bundle_type, instance_id):
-    url = self._build_service_url(bundle_type, [instance_id, 'metrics'])
-
-    headers = {}
-    logging.debug("Making XaaS request: GET %s", url)
-
-    response = requests.get(url, headers=headers)
-    if response.status_code != 200:
-      raise Exception("Unexpected error from XaaS API, code: %s" % response.status_code)
-    return response.json()
+    return self._simple_get(bundle_type, [instance_id, 'metrics'])
 
   def get_metric_values(self, bundle_type, instance_id, metric_key):
-    url = self._build_service_url(bundle_type, [instance_id, 'metrics', metric_key])
-
-    headers = {}
-    logging.debug("Making XaaS request: GET %s", url)
-
-    response = requests.get(url, headers=headers)
-    if response.status_code != 200:
-      raise Exception("Unexpected error from XaaS API, code: %s" % response.status_code)
-    return response.json()
+    url = self._simple_get(bundle_type, [instance_id, 'metrics', metric_key])
