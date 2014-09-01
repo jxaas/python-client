@@ -142,4 +142,4 @@ class Client(object):
     return self._simple_get(bundle_type, [instance_id, 'metrics'])
 
   def get_metric_values(self, bundle_type, instance_id, metric_key):
-    url = self._simple_get(bundle_type, [instance_id, 'metrics', metric_key])
+    return self._simple_get(bundle_type, [instance_id, 'metrics', metric_key])
