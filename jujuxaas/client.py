@@ -143,3 +143,6 @@ class Client(object):
 
   def get_metric_values(self, bundle_type, instance_id, metric_key):
     return self._simple_get(bundle_type, [instance_id, 'metrics', metric_key])
+
+  def get_scaling(self, bundle_type, instance_id):
+    return self._simple_get(bundle_type, [instance_id, 'scaling'])
