@@ -26,27 +26,44 @@ class Client(object):
     components = components + extra_components
     return self._build_url(components)
 
+  def _build_auth(self):
+    auth = requests.auth.HTTPBasicAuth(self.username, self.password)
+    return auth
+    
   def _simple_get(self, bundle_type, path):
     url = self._build_service_url(bundle_type, path)
 
     headers = {}
-    logging.debug("Making XaaS request: GET %s", url)
+    auth = self._build_auth()
 
-    response = requests.get(url, headers=headers)
+    logging.debug("Making XaaS request: GET %s", url)
+    response = requests.get(url, headers=headers, auth=auth)
     if response.status_code != 200:
       raise Exception("Unexpected error from XaaS API, code: %s" % response.status_code)
     return response.json()
+
+  def _simple_delete(self, bundle_type, path):
+    url = self._build_service_url(bundle_type, path)
+
+    headers = {}
+    auth = self._build_auth()
+
+    logging.debug("Making XaaS request: DELETE %s", url)
+    response = requests.delete(url, headers=headers, auth=auth)
+    if response.status_code != 202:
+      raise Exception("Unexpected error from XaaS API, code: %s" % response.status_code)
 
   def _simple_put(self, bundle_type, path, payload):
     url = self._build_service_url(bundle_type, path)
 
     headers = {}
     headers['Content-Type'] = 'application/json'
+    auth = self._build_auth()
 
     data = json.dumps(payload)
     logging.debug("Making XaaS request: PUT %s with %s", url, data)
 
-    response = requests.put(url, data=data, headers=headers)
+    response = requests.put(url, data=data, headers=headers, auth=auth)
     if response.status_code != 200:
       raise Exception("Unexpected error from XaaS API, code: %s" % response.status_code)
     return response.json()
@@ -67,71 +84,23 @@ class Client(object):
     return self._simple_put(bundle_type, [instance_id], payload)
 
   def destroy_instance(self, bundle_type, instance_id):
-    url = self._build_service_url(bundle_type, [instance_id])
-
-    headers = {}
-
-    logging.debug("Making XaaS request: DELETE %s", url)
-
-    response = requests.delete(url, headers=headers)
-    if response.status_code != 202:
-      raise Exception("Unexpected error from XaaS API, code: %s" % response.status_code)
+    return self._simple_delete(bundle_type, [instance_id])
 
   def repair_instance(self, bundle_type, instance_id):
-    url = self._build_service_url(bundle_type, [instance_id, 'health'])
-
-    headers = {}
-
     payload = {}
-    data = json.dumps(payload)
-
-    logging.debug("Making XaaS request: POST %s with %s", url, data)
-
-    response = requests.post(url, data=data, headers=headers)
-    if response.status_code != 200:
-      raise Exception("Unexpected error from XaaS API, code: %s" % response.status_code)
+    return self._simple_put(bundle_type, [instance_id, 'health'], payload)
 
   def list_bundle_types(self):
-    url = self._build_service_url(None, [])
-
-    headers = {}
-    logging.debug("Making XaaS request: GET %s", url)
-    response = requests.get(url, headers=headers)
-    if response.status_code != 200:
-      raise Exception("Unexpected error from XaaS API, code: %s" % response.status_code)
-    return response.json()
+    return self._simple_get(None, [])
 
   def list_instances(self, bundle_type):
-    url = self._build_service_url(bundle_type, [])
-
-    headers = {}
-    logging.debug("Making XaaS request: GET %s", url)
-    response = requests.get(url, headers=headers)
-    if response.status_code != 200:
-      raise Exception("Unexpected error from XaaS API, code: %s" % response.status_code)
-    return response.json()
+    return self._simple_get(bundle_type, [])
 
   def get_instance_state(self, bundle_type, instance_id):
-    url = self._build_service_url(bundle_type, [instance_id])
-
-    headers = {}
-    logging.debug("Making XaaS request: GET %s", url)
-
-    response = requests.get(url, headers=headers)
-    if response.status_code != 200:
-      raise Exception("Unexpected error from XaaS API, code: %s" % response.status_code)
-    return response.json()
+    return self._simple_get(bundle_type, [instance_id])
 
   def get_relation_properties(self, bundle_type, instance_id, relation):
-    url = self._build_service_url(bundle_type, [instance_id, 'relations', relation])
-
-    headers = {}
-    logging.debug("Making XaaS request: GET %s", url)
-
-    response = requests.get(url, headers=headers)
-    if response.status_code != 200:
-      raise Exception("Unexpected error from XaaS API, code: %s" % response.status_code)
-    return response.json()
+    return self._simple_get(bundle_type, [instance_id, 'relations', relation])
 
   def get_log(self, bundle_type, instance_id):
     json = self._simple_get(bundle_type, [instance_id, 'log'])
