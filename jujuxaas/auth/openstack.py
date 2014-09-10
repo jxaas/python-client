@@ -18,25 +18,28 @@ class AuthOpenstack(object):
   def _get_client(self, project):
     keystone = self.clients.get(project)
     if keystone is None:
-      keystone = client.Client(auth_url=self.auth_url + '/v2.0',
+      keystone = client.Client(auth_url=self.auth_url,
                                username=self.username,
                                password=self.password,
                                project_name=project)
       self.clients[project] = keystone
-      print "auth_ref %s"  % keystone.auth_ref
+      keystone.authenticate()
     return keystone
 
   def decorate_request(self, request):
+    request['auth'] = requests.auth.HTTPBasicAuth(self.username, self.password)
     return request
 
   def get_base_url(self):
-    client = self._get_client(self.get_tenant())
+    keystone = self._get_client(self.get_tenant())
 
-    for s in client.endpoints.list():
-      print s
+    service_catalog = keystone.service_catalog
+    url = service_catalog.url_for(service_type='jxaas')
+    if url is None:
+      logger.debug("Service catalog: %s", service_catalog)
+      raise Exception("Cannot find jxaas endpoint in Keystone")
+    return url
 
-    return None
-  
   def get_tenant(self):
     return self.tenant
 #     if self.tenant:

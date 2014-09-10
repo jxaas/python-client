@@ -15,7 +15,7 @@ class AuthDirect(object):
     return request
 
   def get_base_url(self):
-    return self.base_url
+    return self.base_url + '/' + self.tenant
   
   def get_tenant(self):
     return self.tenant

@@ -18,7 +18,7 @@ class Client(object):
     return url
 
   def _build_service_url(self, bundle_type, extra_components):
-    components = [ self.auth.get_tenant(), 'services' ]
+    components = [ 'services' ]
     if bundle_type:
       components.append(bundle_type)
     components = components + extra_components
