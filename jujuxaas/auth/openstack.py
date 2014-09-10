@@ -26,8 +26,13 @@ class AuthOpenstack(object):
       keystone.authenticate()
     return keystone
 
+  def _get_auth_token(self):
+    client = self._get_client(self.tenant)
+    return client.auth_token
+
   def decorate_request(self, request):
-    request['auth'] = requests.auth.HTTPBasicAuth(self.username, self.password)
+    #request['auth'] = requests.auth.HTTPBasicAuth(self.username, self.password)
+    request['headers']['X-Auth-Token'] = self._get_auth_token()
     return request
 
   def get_base_url(self):
