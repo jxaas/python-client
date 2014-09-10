@@ -5,7 +5,7 @@ setup(
     version='0.1.0',
     author='Justin SB',
     author_email='justin@fathomdb.com',
-    packages=['jujuxaas'],
+    packages=['jujuxaas', 'jujuxaas.auth'],
     url='http://pypi.python.org/pypi/JujuXaasClient/',
     license='LICENSE.txt',
     description='Client library for Juju XaaS.',

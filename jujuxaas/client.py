@@ -6,38 +6,43 @@ import logging
 logger = logging.getLogger(__name__)
 
 class Client(object):
-  def __init__(self, url, tenant, username, password):
-    if not url.endswith("/"):
-      url = url + "/"
-    self.base_url = url
-    self.tenant = tenant
-    self.username = username
-    self.password = password
+  def __init__(self, auth):
+    self.auth = auth
 
   def _build_url(self, components):
+    base_url = self.auth.get_base_url()
+    if not base_url.endswith("/"):
+      base_url = base_url + "/"
     relative_url = '/'.join(components)
-    url = urlparse.urljoin(self.base_url, relative_url)
+    url = urlparse.urljoin(base_url, relative_url)
     return url
 
   def _build_service_url(self, bundle_type, extra_components):
-    components = [ self.tenant, 'services' ]
+    components = [ self.auth.get_tenant(), 'services' ]
     if bundle_type:
       components.append(bundle_type)
     components = components + extra_components
     return self._build_url(components)
 
-  def _build_auth(self):
-    auth = requests.auth.HTTPBasicAuth(self.username, self.password)
-    return auth
+  def _build_request(self, method, url):
+    request = {}
+    request['method'] = method
+    request['url'] = url
+    request['headers'] = {}
+    
+    request = self.auth.decorate_request(request)
+
+    logging.debug("Making XaaS request: %s %s", request['method'], request['url'])
+    return request
+
+  def _execute_request(self, request):
+    return requests.request(**request)
     
   def _simple_get(self, bundle_type, path):
     url = self._build_service_url(bundle_type, path)
 
-    headers = {}
-    auth = self._build_auth()
-
-    logging.debug("Making XaaS request: GET %s", url)
-    response = requests.get(url, headers=headers, auth=auth)
+    request = self._build_request('GET', url)
+    response = self._execute_request(request)
     if response.status_code != 200:
       raise Exception("Unexpected error from XaaS API, code: %s" % response.status_code)
     return response.json()
@@ -45,11 +50,8 @@ class Client(object):
   def _simple_delete(self, bundle_type, path):
     url = self._build_service_url(bundle_type, path)
 
-    headers = {}
-    auth = self._build_auth()
-
-    logging.debug("Making XaaS request: DELETE %s", url)
-    response = requests.delete(url, headers=headers, auth=auth)
+    request = self._build_request('DELETE', url)
+    response = self._execute_request(request)
     if response.status_code != 202:
       raise Exception("Unexpected error from XaaS API, code: %s" % response.status_code)
 
@@ -58,12 +60,10 @@ class Client(object):
 
     headers = {}
     headers['Content-Type'] = 'application/json'
-    auth = self._build_auth()
-
     data = json.dumps(payload)
-    logging.debug("Making XaaS request: PUT %s with %s", url, data)
 
-    response = requests.put(url, data=data, headers=headers, auth=auth)
+    request = self._build_request('PUT', url, data=data, headers=headers)
+    response = self._execute_request(request)
     if response.status_code != 200:
       raise Exception("Unexpected error from XaaS API, code: %s" % response.status_code)
     return response.json()
