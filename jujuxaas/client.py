@@ -24,11 +24,13 @@ class Client(object):
     components = components + extra_components
     return self._build_url(components)
 
-  def _build_request(self, method, url):
+  def _build_request(self, method, url, data=None, headers={}):
     request = {}
     request['method'] = method
     request['url'] = url
-    request['headers'] = {}
+    request['headers'] = headers
+    if data:
+      request['data'] = data
     
     request = self.auth.decorate_request(request)
 
