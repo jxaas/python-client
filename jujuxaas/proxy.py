@@ -98,12 +98,14 @@ class Proxy(object):
     # relation_id = relation.relation_id
 
     logger.info("Fetching service properties")
-    relation_properties = xaas.get_relation_properties(bundle_type=bundle_type,
+    response = xaas.get_relation_properties(bundle_type=bundle_type,
                                                        instance_id=instance_id,
                                                        relation=relation_name)
+
+    relation_properties = response.get('Properties', {})
 
     relation = Relation.default()
 
     logger.info("Setting relation properties to: %s", relation_properties)
-    relation.set_properties(relation_properties.get('Properties', {}))
+    relation.set_properties(relation_properties)
 
