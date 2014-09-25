@@ -83,7 +83,7 @@ class Proxy(object):
 
     # TODO: Timeout & throw error after a while
     while service.get('Status') != 'started':
-      logger.info("Waiting for service to reach active state.  Current state %s", service.get('State'))
+      logger.info("Waiting for service to reach active state.  Current state %s", service.get('Status'))
       time.sleep(5)
       service = xaas.get_instance_state(bundle_type=bundle_type, instance_id=instance_id)
 
@@ -155,7 +155,7 @@ connect=%s
 """ % (accept, connect)
 
     changed = False
-    if utils.write_file('/etc/init.d/tlswrap.conf', stunnel_config):
+    if utils.write_file('/etc/stunnel/tlswrap.conf', stunnel_config):
       changed = True
 
     if utils.update_keyvalue('/etc/default/stunnel4', { 'ENABLED': '1' }):
