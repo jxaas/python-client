@@ -66,7 +66,7 @@ class Proxy(object):
 
   def on_start(self):
     # Install the stunnel4 package
-    utils.apt_get_install(['stunnel4'])
+    jujuxaas.utils.apt_get_install(['stunnel4'])
 
     # We just defer to on_config_changed - everything should be idempotent
     return self.on_config_changed()
