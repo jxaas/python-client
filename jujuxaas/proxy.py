@@ -139,6 +139,8 @@ class Proxy(object):
     host = properties.get('host')
     port = properties.get('port')
 
+    logger.info("Properties before rewrite: %s" % properties)
+
     default_port = self._get_default_port(bundle_type)
 
     # By using the default_port again, we can make things easier for clients
@@ -162,10 +164,13 @@ connect=%s
       changed = True
 
     if changed:
-      utils.run_command('/etc/init.d/stunnel4', 'start')
-      utils.run_command('/etc/init.d/stunnel4', 'reload')
+      utils.run_command(['/etc/init.d/stunnel4', 'start'])
+      utils.run_command(['/etc/init.d/stunnel4', 'reload'])
 
     properties['host'] = Juju.private_address()
     properties['port'] = str(default_port)
+
+    logger.info("Properties after rewrite: %s" % properties)
+
     return properties
 
