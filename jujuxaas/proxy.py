@@ -3,6 +3,8 @@ import time
 import yaml
 
 from jujucharmtoolkit.juju import Juju, Relation
+import jujuxaas.auth.direct
+import jujuxaas.auth.openstack
 import jujuxaas.client
 import jujuxaas.utils
 
