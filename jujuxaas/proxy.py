@@ -136,7 +136,7 @@ class Proxy(object):
 
   def _ensure_tls(self, bundle_type, properties):
     # TODO: We could create some system properties here, that work everywhere
-    host = properties.get('host')
+    host = properties.get('host') or properties.get('private-address')
     port = properties.get('port')
 
     logger.info("Properties before rewrite: %s" % properties)
@@ -167,7 +167,10 @@ connect=%s
       utils.run_command(['/etc/init.d/stunnel4', 'start'])
       utils.run_command(['/etc/init.d/stunnel4', 'reload'])
 
-    properties['host'] = Juju.private_address()
+    if 'hopst' in properties:
+      properties['host'] = Juju.private_address()
+    if 'private-address' in properties:
+      properties['private-address'] = Juju.private_address()
     properties['port'] = str(default_port)
 
     logger.info("Properties after rewrite: %s" % properties)
