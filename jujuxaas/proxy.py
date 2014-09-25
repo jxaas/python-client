@@ -6,7 +6,7 @@ from jujucharmtoolkit.juju import Juju, Relation
 import jujuxaas.auth.direct
 import jujuxaas.auth.openstack
 import jujuxaas.client
-import jujuxaas.utils
+from jujuxaas import utils
 
 import logging
 logger = logging.getLogger(__name__)
@@ -66,7 +66,7 @@ class Proxy(object):
 
   def on_start(self):
     # Install the stunnel4 package
-    jujuxaas.utils.apt_get_install(['stunnel4'])
+    utils.apt_get_install(['stunnel4'])
 
     # We just defer to on_config_changed - everything should be idempotent
     return self.on_config_changed()
