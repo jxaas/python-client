@@ -39,10 +39,11 @@ def update_keyvalue(path, entries):
 
 # Writes a file, checking if the contents have changed
 def write_file(path, contents):
-  with open(path) as f:
-    existing = f.read()
-  if existing == contents:
-    return False
+  if os.path.exists(path):
+    with open(path) as f:
+      existing = f.read()
+    if existing == contents:
+      return False
   with open(path, 'w') as f:
     f.write(contents)
   return True
