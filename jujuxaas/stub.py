@@ -82,13 +82,14 @@ class Stub(object):
     host = Juju.private_address()
     config = Juju.config()
     private_port = config['private-port']
-    public_port = config['public-port']
-
     if private_port == 0:
       logger.info("Private port is 0; won't configure load balancer")
 
+    public_port = config['public-port']
     if public_port == 0:
       logger.info("Public port is 0; won't configure load balancer")
+
+    protocol = config.get('protocol', '').strip().lower()
 
     service_name = Juju.unit_name()
     service_name = service_name.split('/')[0]
@@ -99,9 +100,12 @@ class Stub(object):
     servers = []
     servers.append(['s_1', host, private_port, ''])
 
+    service_options = [ 'mode tcp', 'balance leastconn' ]
+    if protocol == 'tls':
+      service_options.append('ssl')
     service = {}
     service['service_name'] = service_name
-    service['service_options'] = [ 'mode tcp', 'balance leastconn' ]
+    service['service_options'] = service_options
     service['servers'] = servers
 
     # Must set both service_host and service_port, or else haproxy ignores the other
