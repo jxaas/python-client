@@ -4,6 +4,7 @@ import yaml
 
 from jujucharmtoolkit.juju import Juju, Relation
 import jujuxaas.client
+import jujuxaas.utils
 
 import logging
 logger = logging.getLogger(__name__)
@@ -55,6 +56,9 @@ class Proxy(object):
     return self._cache_config
 
   def on_start(self):
+    # Install the stunnel4 package
+    utils.apt_get_install(['stunnel4'])
+
     # We just defer to on_config_changed - everything should be idempotent
     return self.on_config_changed()
 
@@ -104,8 +108,55 @@ class Proxy(object):
 
     relation_properties = response.get('Properties', {})
 
+    protocol = relation_properties.get('protocol')
+    if protocol == 'tls':
+      relation_properties = self._ensure_tls(bundle_type, relation_properties)
+
     relation = Relation.default()
 
     logger.info("Setting relation properties to: %s", relation_properties)
     relation.set_properties(relation_properties)
+
+  def _get_default_port(self, bundle_type):
+    if bundle_type == 'mysql':
+      return 3306
+    if bundle_type == 'postgres':
+      return 5432
+    logger.warn("Unknown bundle_type in _get_default_port (%s), defaulting to 9999", bundle_type)
+    return 9999
+
+  def _ensure_tls(self, bundle_type, properties):
+    # TODO: We could create some system properties here, that work everywhere
+    host = properties.get('host')
+    port = properties.get('port')
+
+    default_port = self._get_default_port(bundle_type)
+
+    # By using the default_port again, we can make things easier for clients
+    # that don't support the port
+    accept = '0.0.0.0:' + str(default_port)
+    connect = host + ':' + str(port)
+
+    stunnel_config = """
+client=yes
+
+[tlswrap]
+accept=%s
+connect=%s
+""" % (accept, connect)
+
+    changed = False
+    if utils.write_file('/etc/init.d/tlswrap.conf', stunnel_config):
+      changed = True
+
+    if utils.update_keyvalue('/etc/default/stunnel4', { 'ENABLED': '1' }):
+      changed = True
+
+    if changed:
+      utils.run_command('/etc/init.d/stunnel4', 'start')
+      utils.run_command('/etc/init.d/stunnel4', 'reload')
+
+    properties['host'] = Juju.private_address()
+    properties['port'] = str(default_port)
+    return properties
 
