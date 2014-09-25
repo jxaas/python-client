@@ -38,13 +38,20 @@ class Proxy(object):
     url = config.get('jxaas-url', '')
     if not url:
       raise Exception("jxaas-url is required")
+    authmode = config.get('jxaas-authmode', '')
     tenant = config.get('jxaas-tenant', '')
     if not tenant:
       raise Exception("jxaas-tenant is required")
     username = config.get('jxaas-user', '')
     secret = config.get('jxaas-secret', '')
 
-    xaas = jujuxaas.client.Client(url=url, tenant=tenant, username=username, password=secret)
+    authmode = authmode.strip().lower()
+    if authmode == 'openstack':
+      auth = jujuxaas.auth.direct.AuthDirect(url=url, tenant=tenant, username=username, password=secret)
+    else:
+      auth = jujuxaas.auth.openstack.AuthOpenstack(url=url, tenant=tenant, username=username, password=secret)
+
+    xaas = jujuxaas.client.Client(auth)
     return xaas
 
   @property
