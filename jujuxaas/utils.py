@@ -1,5 +1,6 @@
 import subprocess
 import os
+
 def run_command(args, stdin='', exit_codes=[0], **kwargs):
   print 'Running command: ' + ' '.join(args)
 
@@ -25,7 +26,7 @@ def update_keyvalue(path, entries):
   lines = existing.split('\n')
   for i in range(len(lines)):
     raw_line = lines[i]
-    line = raw_line.trim()
+    line = raw_line.strip()
     for k, v in entries.iteritems():
       if line.startswith(k + "="):
         updated = k + "=" + v
