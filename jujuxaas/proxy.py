@@ -49,9 +49,9 @@ class Proxy(object):
 
     authmode = authmode.strip().lower()
     if authmode == 'openstack':
-      auth = jujuxaas.auth.direct.AuthDirect(url=url, tenant=tenant, username=username, password=secret)
-    else:
       auth = jujuxaas.auth.openstack.AuthOpenstack(url=url, tenant=tenant, username=username, password=secret)
+    else:
+      auth = jujuxaas.auth.direct.AuthDirect(url=url, tenant=tenant, username=username, password=secret)
 
     xaas = jujuxaas.client.Client(auth)
     return xaas
