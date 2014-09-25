@@ -35,7 +35,7 @@ def update_keyvalue(path, entries):
           lines[i] = updated
   if updated:
     with open(path, 'w') as f:
-        f.write(lines.join('\n'))
+        f.write('\n'.join(lines))
   return updated
 
 # Writes a file, checking if the contents have changed
