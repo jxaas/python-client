@@ -11,6 +11,7 @@ setup(
     description='Client library for Juju XaaS.',
     long_description=open('README.md').read(),
     install_requires=[
-        'requests'
+        'requests',
+        'python-keystoneclient'
     ],
 )
