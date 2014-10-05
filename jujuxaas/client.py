@@ -24,13 +24,15 @@ class Client(object):
     components = components + extra_components
     return self._build_url(components)
 
-  def _build_request(self, method, url, data=None, headers={}):
+  def _build_request(self, method, url, data=None, headers={}, timeout=None):
     request = {}
     request['method'] = method
     request['url'] = url
     request['headers'] = headers
     if data:
       request['data'] = data
+    if timeout:
+      request['timeout'] = timeout
     
     request = self.auth.decorate_request(request)
 
@@ -64,7 +66,7 @@ class Client(object):
     headers['Content-Type'] = 'application/json'
     data = json.dumps(payload)
 
-    request = self._build_request('PUT', url, data=data, headers=headers)
+    request = self._build_request('PUT', url, data=data, headers=headers, timeout=30)
     response = self._execute_request(request)
     if response.status_code != 200:
       raise Exception("Unexpected error from XaaS API, code: %s" % response.status_code)
