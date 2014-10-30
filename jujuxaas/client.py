@@ -66,7 +66,7 @@ class Client(object):
     headers['Content-Type'] = 'application/json'
     data = json.dumps(payload)
 
-    request = self._build_request('PUT', url, data=data, headers=headers, timeout=30)
+    request = self._build_request('PUT', url, data=data, headers=headers, timeout=60)
     response = self._execute_request(request)
     if response.status_code != 200:
       raise Exception("Unexpected error from XaaS API, code: %s" % response.status_code)
