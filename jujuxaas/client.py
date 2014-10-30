@@ -36,6 +36,7 @@ class Client(object):
     
     request = self.auth.decorate_request(request)
 
+    print "request['auth']=%s" % request['auth']
     logging.debug("Making XaaS request: %s %s", request['method'], request['url'])
     return request
 
