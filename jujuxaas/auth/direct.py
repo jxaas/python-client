@@ -11,6 +11,8 @@ class AuthDirect(object):
     self.password = password
 
   def decorate_request(self, request):
+    logger.debug("Using direct authentication as user: %s", self.username)
+
     request['auth'] = requests.auth.HTTPBasicAuth(self.username, self.password)
     return request
 

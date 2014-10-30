@@ -31,6 +31,8 @@ class AuthOpenstack(object):
     return client.auth_token
 
   def decorate_request(self, request):
+    logger.debug("Using OpenStack authentication as user: %s", self.username)
+
     #request['auth'] = requests.auth.HTTPBasicAuth(self.username, self.password)
     request['headers']['X-Auth-Token'] = self._get_auth_token()
     return request
