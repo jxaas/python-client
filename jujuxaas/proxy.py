@@ -13,11 +13,11 @@ logger = logging.getLogger(__name__)
 
 logging.basicConfig(level=logging.DEBUG)
 
-def run_relation_hook():
+def run_relation_hook(interface_id=None):
     relation_name = os.environ["JUJU_RELATION"]
     juju_action = Juju.action()
     proxy = Proxy()
-    return proxy.run_relation_hook(relation_name, juju_action)
+    return proxy.run_relation_hook(relation_name, juju_action, interface_id=interface_id)
 
 def on_start():
     proxy = Proxy()
@@ -94,7 +94,7 @@ class Proxy(object):
     xaas = self._client()
     # service = xaas.ensure_instance(charm=self.charm, instance_id=instance_id, env_uuid=env_uuid)
 
-  def run_relation_hook(self, relation_name, action):
+  def run_relation_hook(self, relation_name, action, interface_id=None):
     logger.info("Running relation hook %s %s", relation_name, action)
 
     # TODO: Only on certain actions?
@@ -105,15 +105,14 @@ class Proxy(object):
 
     bundle_type = self.config['charm']
     instance_id = Juju.service_name()
-    # config = Juju.config()
-    # unit_id = Juju.unit_name()
-    # remote_name = os.environ["JUJU_REMOTE_UNIT"]
-    # relation_id = relation.relation_id
+
+    if interface_id is None:
+      interface_id = instance_id
 
     logger.info("Fetching service properties")
     response = xaas.get_relation_properties(bundle_type=bundle_type,
-                                                       instance_id=instance_id,
-                                                       relation=relation_name)
+                                            instance_id=instance_id,
+                                            relation=relation_name)
 
     relation_properties = response.get('Properties', {})
 
