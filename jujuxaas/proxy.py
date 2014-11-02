@@ -109,10 +109,11 @@ class Proxy(object):
     if interface_id is None:
       interface_id = instance_id
 
-    logger.info("Fetching service properties")
+    logger.info("Fetching service properties for %s/%s/%s",
+                bundle_type, instance_id, interface_id)
     response = xaas.get_relation_properties(bundle_type=bundle_type,
                                             instance_id=instance_id,
-                                            relation=relation_name)
+                                            relation=interface_id)
 
     relation_properties = response.get('Properties', {})
 
