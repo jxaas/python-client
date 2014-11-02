@@ -74,12 +74,12 @@ class Proxy(object):
   def on_config_changed(self):
     xaas = self._client()
 
-    config = Juju.config()
+    options = Juju.config()
     bundle_type = self.config['charm']
     instance_id = Juju.service_name()
 
     logger.info("Ensuring that service is configured: %s %s", bundle_type, instance_id)
-    service = xaas.ensure_instance(bundle_type=bundle_type, instance_id=instance_id, config=config)
+    service = xaas.ensure_instance(bundle_type=bundle_type, instance_id=instance_id, options=options)
 
     # TODO: Timeout & throw error after a while
     while service.get('Status') != 'started':

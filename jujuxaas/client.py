@@ -72,15 +72,15 @@ class Client(object):
       raise Exception("Unexpected error from XaaS API, code: %s" % response.status_code)
     return response.json()
 
-  def ensure_instance(self, bundle_type, instance_id, config=None, units=None):
+  def ensure_instance(self, bundle_type, instance_id, options=None, units=None):
     payload = {}
 
     # Cast everything to a string
-    if not config is None:
-      xaas_config = {}
-      for k, v in config.iteritems():
-        xaas_config[k] = str(v)
-      payload['Config'] = xaas_config
+    if not options is None:
+      xaas_options = {}
+      for k, v in options.iteritems():
+        xaas_options[k] = str(v)
+      payload['Options'] = xaas_options
 
     if not units is None:
       payload['NumberUnits'] = units
