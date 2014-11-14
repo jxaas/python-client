@@ -1,13 +1,22 @@
 import json
 import requests
 import urlparse
-#from keystoneclient.v2_0 import client as v2client
-from keystoneclient import client as client
+
+try:
+  #from keystoneclient.v2_0 import client as v2client
+  from keystoneclient import client as client
+  keystoneclient_available=True
+except ImportError:
+  keystoneclient_available=False
 
 import logging
 logger = logging.getLogger(__name__)
 
 class AuthOpenstack(object):
+  @staticmethod
+  def available():
+    return keystoneclient_available
+
   def __init__(self, url, username, password, tenant=None):
     self.auth_url = url
     self.tenant = tenant
