@@ -13,9 +13,6 @@ logger = logging.getLogger(__name__)
 
 logging.basicConfig(level=logging.DEBUG)
 
-def ensure_openstack_libs():
-    utils.run_command(['pip', 'install', 'python-keystoneclient'])
-
 def run_relation_hook(interface_id=None):
     relation_name = os.environ["JUJU_RELATION"]
     juju_action = Juju.action()
@@ -54,7 +51,6 @@ class Proxy(object):
     if authmode == 'openstack':
       auth = jujuxaas.auth.openstack.AuthOpenstack(url=url, tenant=tenant, username=username, password=secret)
     else:
-      ensure_openstack_libs()
       auth = jujuxaas.auth.direct.AuthDirect(url=url, tenant=tenant, username=username, password=secret)
 
     xaas = jujuxaas.client.Client(auth)
