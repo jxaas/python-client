@@ -56,6 +56,10 @@ class AuthOpenstack(object):
       raise Exception("Cannot find jxaas endpoint in Keystone")
     return url
 
+  def get_tenant_id(self):
+    client = self._get_client(self.tenant)
+    return client.tenant_id
+
   def get_tenant(self):
     return self.tenant
 #     if self.tenant:
